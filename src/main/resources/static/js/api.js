@@ -659,5 +659,357 @@ function deleteEspecialidade(id) {
 }
 
 function loadEstatisticasGerais() {
-    showAlert('Funcionalidade em desenvolvimento', 'info');
+    loadEstatisticasGeraisReal();
+}
+
+async function loadEstatisticasGeraisReal() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/relatorios/estatisticas-gerais`);
+        const estatisticas = await response.json();
+        
+        const content = document.getElementById('relatorios-content');
+        content.innerHTML = `
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Estatísticas Gerais do Sistema</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="stat-item">
+                                        <div class="stat-number">${estatisticas.totalJovens}</div>
+                                        <div class="stat-label">Total de Jovens</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-item">
+                                        <div class="stat-number">${estatisticas.totalEspecialidades}</div>
+                                        <div class="stat-label">Especialidades</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-item">
+                                        <div class="stat-number">${estatisticas.totalRequisitosCompletos}</div>
+                                        <div class="stat-label">Requisitos Completos</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-item">
+                                        <div class="stat-number">${estatisticas.jovensAptosCruzeiro}</div>
+                                        <div class="stat-label">Aptos Cruzeiro do Sul</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-birthday-cake me-2"></i>Média de Idade</h6>
+                                    <p class="h4 text-info">${estatisticas.mediaIdade} anos</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-chart-line me-2"></i>Média de Requisitos por Jovem</h6>
+                                    <p class="h4 text-success">${estatisticas.mediaRequisitosPorJovem}</p>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6><i class="fas fa-tint me-2"></i>Distribuição por Tipo Sanguíneo</h6>
+                            <div class="row">
+                                ${Object.entries(estatisticas.distribuicaoTipoSanguineo).map(([tipo, count]) => `
+                                    <div class="col-md-3 mb-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="badge bg-info">${tipo}</span>
+                                            <span class="fw-bold">${count} jovens</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <button class="btn btn-outline-primary w-100" onclick="loadRelatorioJovensPorNivel()">
+                        <i class="fas fa-layer-group me-2"></i>Jovens por Nível
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-outline-success w-100" onclick="loadRelatorioRankingProgressao()">
+                        <i class="fas fa-trophy me-2"></i>Ranking de Progressão
+                    </button>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Erro ao carregar estatísticas gerais:', error);
+        showAlert('Erro ao carregar estatísticas gerais', 'danger');
+    }
+}
+
+async function loadRelatorioJovensPorNivel() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/relatorios/jovens-por-nivel`);
+        const relatorio = await response.json();
+        
+        const content = document.getElementById('relatorios-content');
+        content.innerHTML = `
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-layer-group me-2"></i>Classificação de Jovens por Nível</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-number text-secondary">${relatorio.contadores.iniciantes}</div>
+                                <div class="stat-label">Iniciantes (0-7 requisitos)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-number text-info">${relatorio.contadores.intermediarios}</div>
+                                <div class="stat-label">Intermediários (8-14 requisitos)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-number text-warning">${relatorio.contadores.avancados}</div>
+                                <div class="stat-label">Avançados (15-19 requisitos)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-number text-success">${relatorio.contadores.especialistas}</div>
+                                <div class="stat-label">Especialistas (20+ requisitos)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${Object.entries(relatorio.classificacao).map(([nivel, jovens]) => `
+                        <div class="mb-4">
+                            <h6 class="text-capitalize">${nivel} (${jovens.length} jovens)</h6>
+                            <div class="row">
+                                ${jovens.map(jovem => `
+                                    <div class="col-md-6 mb-2">
+                                        <div class="card card-sm">
+                                            <div class="card-body p-2">
+                                                <div class="d-flex justify-content-between">
+                                                    <strong>${jovem.nome}</strong>
+                                                    <span class="badge bg-primary">${jovem.totalRequisitos} requisitos</span>
+                                                </div>
+                                                <small class="text-muted">Entrada: ${formatDate(jovem.dataEntrada)}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Erro ao carregar relatório de jovens por nível:', error);
+        showAlert('Erro ao carregar relatório', 'danger');
+    }
+}
+
+async function loadRelatorioRankingProgressao() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/relatorios/ranking-progressao`);
+        const ranking = await response.json();
+        
+        const content = document.getElementById('relatorios-content');
+        content.innerHTML = `
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-trophy me-2"></i>Ranking de Progressão</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Nome</th>
+                                    <th>Requisitos</th>
+                                    <th>Especialidades Completas</th>
+                                    <th>Em Progresso</th>
+                                    <th>Pontuação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${ranking.map(jovem => `
+                                    <tr>
+                                        <td>
+                                            ${jovem.posicao <= 3 ? 
+                                                `<span class="badge bg-${jovem.posicao === 1 ? 'warning' : jovem.posicao === 2 ? 'secondary' : 'dark'}">${jovem.posicao}º</span>` :
+                                                `<span class="badge bg-light text-dark">${jovem.posicao}º</span>`
+                                            }
+                                        </td>
+                                        <td><strong>${jovem.nome}</strong></td>
+                                        <td><span class="badge bg-primary">${jovem.totalRequisitos}</span></td>
+                                        <td><span class="badge bg-success">${jovem.especialidadesCompletas}</span></td>
+                                        <td><span class="badge bg-info">${jovem.especialidadesEmProgresso}</span></td>
+                                        <td><strong>${jovem.pontuacao}</strong></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Erro ao carregar ranking de progressão:', error);
+        showAlert('Erro ao carregar ranking', 'danger');
+    }
+}
+
+async function loadEspecialidadesPopulares() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/relatorios/especialidades-mais-populares`);
+        const especialidades = await response.json();
+        
+        const content = document.getElementById('relatorios-content');
+        content.innerHTML = `
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-medal me-2"></i>Especialidades Mais Populares</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Especialidade</th>
+                                    <th>Área de Conhecimento</th>
+                                    <th>Nível</th>
+                                    <th>Jovens Participantes</th>
+                                    <th>Total de Requisitos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${especialidades.map(esp => `
+                                    <tr>
+                                        <td><strong>${esp.especialidade}</strong></td>
+                                        <td><span class="badge bg-info">${esp.areaConhecimento}</span></td>
+                                        <td><span class="badge bg-primary">Nível ${esp.nivel}</span></td>
+                                        <td><span class="badge bg-success">${esp.jovensParticipantes} jovens</span></td>
+                                        <td>${esp.totalRequisitos} requisitos</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Erro ao carregar especialidades populares:', error);
+        showAlert('Erro ao carregar relatório', 'danger');
+    }
+}
+
+async function loadProgressaoPorArea() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/relatorios/progressao-por-area`);
+        const progressao = await response.json();
+        
+        const content = document.getElementById('relatorios-content');
+        content.innerHTML = `
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Progresso por Área de Conhecimento</h5>
+                </div>
+                <div class="card-body">
+                    ${progressao.map(area => `
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">${area.areaConhecimento}</h6>
+                                <span class="badge bg-primary">${area.percentualCompleto}%</span>
+                            </div>
+                            <div class="progress mb-2" style="height: 20px;">
+                                <div class="progress-bar" role="progressbar" style="width: ${area.percentualCompleto}%">
+                                    ${area.percentualCompleto}%
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <small class="text-muted">Especialidades: ${area.totalEspecialidades}</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Total Requisitos: ${area.totalRequisitos}</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Completos: ${area.requisitosCompletos}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Erro ao carregar progresso por área:', error);
+        showAlert('Erro ao carregar relatório', 'danger');
+    }
+}
+
+async function loadJovensInativos() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/relatorios/jovens-inativos`);
+        const jovensInativos = await response.json();
+        
+        const content = document.getElementById('relatorios-content');
+        content.innerHTML = `
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-user-clock me-2"></i>Jovens Inativos (sem atividade há 3+ meses)</h5>
+                </div>
+                <div class="card-body">
+                    ${jovensInativos.length === 0 ? 
+                        '<p class="text-muted">Todos os jovens estão ativos! 🎉</p>' :
+                        `
+                        <div class="alert alert-warning">
+                            <strong>Atenção:</strong> ${jovensInativos.length} jovens não têm atividade recente.
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Data de Entrada</th>
+                                        <th>Total de Requisitos</th>
+                                        <th>Última Atividade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${jovensInativos.map(jovem => `
+                                        <tr>
+                                            <td><strong>${jovem.nome}</strong></td>
+                                            <td>${formatDate(jovem.dataEntrada)}</td>
+                                            <td><span class="badge bg-secondary">${jovem.totalRequisitos}</span></td>
+                                            <td>${jovem.ultimaAtividade ? formatDate(jovem.ultimaAtividade) : 'Nunca'}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        `
+                    }
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Erro ao carregar jovens inativos:', error);
+        showAlert('Erro ao carregar relatório', 'danger');
+    }
 }
