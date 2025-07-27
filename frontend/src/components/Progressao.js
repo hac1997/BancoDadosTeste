@@ -107,57 +107,62 @@ function Progressao() {
 
           {progressao && (
             <div id="progressao-content">
-              <Alert variant="info">
+              <div className="alert alert-info">
                 <h5>
                   <i className="fas fa-info-circle me-2"></i>Informações do Jovem
                 </h5>
                 <Row>
                   <Col md={6}>
-                    <strong>Nome:</strong> {progressao.nomeJovem}
+                    <strong>Nome:</strong> {progressao.nomeJovem || 'N/A'}
                     <br />
-                    <strong>Data de Nascimento:</strong> {formatDate(progressao.jovem.data_Nasc)}
+                    <strong>Data de Nascimento:</strong> {progressao.jovem?.dataNasc ? formatDate(progressao.jovem.dataNasc) : 'N/A'}
                     <br />
                     <strong>Tipo Sanguíneo:</strong>{' '}
-                    <span className="badge bg-info">{progressao.jovem.tipoSanguineo}</span>
+                    <span className="badge bg-info">{progressao.jovem?.tipoSanguineo || 'N/A'}</span>
                   </Col>
                   <Col md={6}>
-                    <strong>Data de Entrada:</strong> {formatDate(progressao.jovem.dataEntrada)}
+                    <strong>Data de Entrada:</strong> {progressao.jovem?.dataEntrada ? formatDate(progressao.jovem.dataEntrada) : 'N/A'}
                     <br />
-                    <strong>Alergias:</strong> {progressao.jovem.alergias || 'Nenhuma'}
+                    <strong>Alergias:</strong> {progressao.jovem?.alergias || 'Nenhuma'}
                     <br />
                     <strong>Contato:</strong>{' '}
-                    {progressao.jovem.contato ? progressao.jovem.contato.telefone : 'Não informado'}
+                    {progressao.jovem?.contato?.telefone || 'Não informado'}
                   </Col>
                 </Row>
-              </Alert>
+              </div>
 
               <div id="especialidades-progress">
                 <h5>
                   <i className="fas fa-chart-bar me-2"></i>Progresso nas Especialidades
                 </h5>
-                {progressao.especialidades.map((esp) => {
+                {progressao.especialidades && progressao.especialidades.length > 0 ? progressao.especialidades.map((esp) => {
                   const badgeClass =
-                    esp.nivel === 3
+                    esp?.nivel === 3
                       ? 'bg-success'
-                      : esp.nivel === 2
+                      : esp?.nivel === 2
                       ? 'bg-warning'
                       : 'bg-info';
                   return (
-                    <Card key={esp.especialidade.idEspecialidade} className="mb-3">
+                    <Card key={esp?.especialidade?.idEspecialidade || Math.random()} className="mb-3">
                       <Card.Body>
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                          <h6 className="mb-0">{esp.especialidade.descricao}</h6>
-                          <span className={`badge ${badgeClass}`}>Nível {esp.nivel}</span>
+                          <h6 className="mb-0">{esp?.especialidade?.descricao || 'Especialidade não informada'}</h6>
+                          <span className={`badge ${badgeClass}`}>Nível {esp?.nivel || 1}</span>
                         </div>
-                        <ProgressBar now={esp.percentual} style={{ height: '10px' }} />
+                        <ProgressBar now={esp?.percentual || 0} style={{ height: '10px' }} />
                         <small className="text-muted">
-                          {esp.requisitos_completos} de {esp.total_requisitos} requisitos completos (
-                          {esp.percentual.toFixed(1)}%)
+                          {esp?.requisitos_completos || 0} de {esp?.total_requisitos || 0} requisitos completos (
+                          {esp?.percentual ? esp.percentual.toFixed(1) : '0.0'}%)
                         </small>
                       </Card.Body>
                     </Card>
                   );
-                })}
+                }) : (
+                  <div className="alert alert-warning">
+                    <i className="fas fa-exclamation-triangle me-2"></i>
+                    Nenhuma especialidade encontrada para este jovem.
+                  </div>
+                )}
               </div>
             </div>
           )}

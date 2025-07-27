@@ -33,10 +33,6 @@ function Home() {
           <i className="fas fa-campground me-3"></i>Sistema Escoteiro - Ramo Lobinho
         </h1>
         <p className="lead">Gerenciamento completo de progressão dos jovens lobinhos</p>
-        <Alert variant="info" className="mt-3">
-          <strong>Sobre o Ramo Lobinho:</strong> Para jovens de 6,5 a 10 anos de idade. 
-          Sistema de progressão com especialidades, distintivos e insígnias de interesse especial.
-        </Alert>
       </div>
 
       <Container>
