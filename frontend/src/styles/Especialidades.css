@@ -1,0 +1,13 @@
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  background: var(--primary-color);
+  color: white;
+}
+
+.badge {
+  border-radius: 15px;
+  padding: 0.5rem 1rem;
+}

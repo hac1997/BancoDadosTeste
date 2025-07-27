@@ -1,26 +1,29 @@
 package ads.bcd.dto;
 
+import lombok.Data;
 import java.util.List;
-import java.util.Map; // Mantenha Map por enquanto para "especialidades" como você tinha
+import java.util.Map;
 
+@Data
 public class ProgressaoJovemDTO {
-    private JovemDTO jovem; // Agora é JovemDTO
-    private List<Map<String, Object>> especialidades; // Mantenha como Map por enquanto
+    private Integer idJovem;
+    private String nomeJovem;
+    private List<Map<String, Object>> progressaoEspecialidades; // Example field for progress data
+    private Integer totalRequisitosCumpridos;
+    private String nivelAtual;
+    private String dataNasc;
 
-    // Getters e Setters
-    public JovemDTO getJovem() {
-        return jovem;
+    // Constructor, if needed
+    public ProgressaoJovemDTO(Integer idJovem, String nomeJovem, List<Map<String, Object>> progressaoEspecialidades,
+            Integer totalRequisitosCumpridos, String nivelAtual) {
+        this.idJovem = idJovem;
+        this.nomeJovem = nomeJovem;
+        this.progressaoEspecialidades = progressaoEspecialidades;
+        this.totalRequisitosCumpridos = totalRequisitosCumpridos;
+        this.nivelAtual = nivelAtual;
     }
 
-    public void setJovem(JovemDTO jovem) {
-        this.jovem = jovem;
-    }
-
-    public List<Map<String, Object>> getEspecialidades() {
-        return especialidades;
-    }
-
-    public void setEspecialidades(List<Map<String, Object>> especialidades) {
-        this.especialidades = especialidades;
+    // Default constructor for Jackson
+    public ProgressaoJovemDTO() {
     }
 }

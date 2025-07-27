@@ -1,23 +1,14 @@
 package ads.bcd.model;
 
-import java.util.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Data
 @Entity
-@IdClass(JovemRequisitoEspecialidadeId.class)
 @Table(name = "jovem_requisito_especialidade")
+@IdClass(JovemRequisitoEspecialidadeId.class)
 public class JovemRequisitoEspecialidade {
 
     @Id
@@ -30,17 +21,14 @@ public class JovemRequisitoEspecialidade {
     @JoinColumn(name = "id_requisito")
     private RequisitoEspecialidade requisito;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "data_cumprimento", nullable = false) // <-- ADDED name="data_cumprimento" HERE
-    private Date data;
+    @Column(name = "data_cumprimento", nullable = false)
+    private LocalDate data_cumprimento;
 
-    protected JovemRequisitoEspecialidade() {
-    }
+    public JovemRequisitoEspecialidade() {}
 
-    public JovemRequisitoEspecialidade(Jovem jovem, RequisitoEspecialidade requisito, Date data) {
+    public JovemRequisitoEspecialidade(Jovem jovem, RequisitoEspecialidade requisito, LocalDate dataCumprimento) {
         this.jovem = jovem;
         this.requisito = requisito;
-        this.data = data;
+        this.data_cumprimento = dataCumprimento;
     }
-
 }

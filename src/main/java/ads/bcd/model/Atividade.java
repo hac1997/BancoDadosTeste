@@ -1,17 +1,9 @@
 package ads.bcd.model;
 
-import java.util.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -20,21 +12,18 @@ public class Atividade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idAtividade;
+    private Integer id_atividade;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String descricao;
+    private String descripcion;
 
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
-    private Date data;
+    @Column(name = "data_atividade", nullable = false)
+    private LocalDate data_atividade;
 
-    protected Atividade() {
+    protected Atividade() {}
+
+    public Atividade(String descripcion, LocalDate dataAtividade) {
+        this.descripcion = descripcion;
+        this.data_atividade = dataAtividade;
     }
-
-    public Atividade(String descricao, Date data) {
-        this.descricao = descricao;
-        this.data = data;
-    }
-
 }

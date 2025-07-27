@@ -1,0 +1,41 @@
+.section-content {
+  padding: 2rem;
+}
+
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table thead {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.badge {
+  border-radius: 15px;
+  padding: 0.5rem 1rem;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 0.2rem rgba(74, 124, 89, 0.25);
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+}
+
+.spinner-border {
+  color: var(--secondary-color);
+}

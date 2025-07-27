@@ -1,96 +1,99 @@
 package ads.bcd.controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import ads.bcd.dto.AreaConhecimentoDTO;
 import ads.bcd.dto.EspecialidadeDTO;
 import ads.bcd.model.Especialidade;
-import ads.bcd.service.EspecialidadeService;
+import ads.bcd.repository.EspecialidadeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping("api/especialidades")
+@RequestMapping("/api/especialidades")
 public class EspecialidadeController {
 
-    private final EspecialidadeService especialidadeService;
-
-    public EspecialidadeController(EspecialidadeService especialidadeService) {
-        this.especialidadeService = especialidadeService;
-    }
+    @Autowired
+    private EspecialidadeRepository especialidadeRepository;
 
     @GetMapping
-    public List<EspecialidadeDTO> listarTodas() {
-        return especialidadeService.listarTodas().stream().map(this::convertToDTO)
-                .toList();
+    public List<EspecialidadeDTO> getAllEspecialidades(@RequestParam(required = false) String nivel) {
+        Iterable<Especialidade> especialidadesIterable = nivel != null && !nivel.isEmpty()
+                ? especialidadeRepository.findByNivel(Integer.parseInt(nivel))
+                : especialidadeRepository.findAll();
+        
+        List<Especialidade> especialidades = StreamSupport.stream(especialidadesIterable.spliterator(), false)
+                .collect(Collectors.toList());
+        
+        return especialidades.stream()
+                .map(e -> {
+                    EspecialidadeDTO dto = new EspecialidadeDTO();
+                    dto.setIdEspecialidade(e.getIdEspecialidade());
+                    dto.setDescricao(e.getDescricao());
+                    dto.setNivel(e.getNivel());
+                    dto.setTotalRequisitos(e.getTotalRequisitos());
+                    // Assuming AreaConhecimentoDTO is properly set up
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EspecialidadeDTO> buscarPorId(@PathVariable Integer id) {
-        Optional<Especialidade> especialidade = especialidadeService.buscarPorId(id);
-        return especialidade.map(this::convertToDTO) // <-- Mudei aqui!
-                            .map(ResponseEntity::ok)
-                            .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/select")
+    public List<EspecialidadeDTO> getEspecialidadesForSelect() {
+        Iterable<Especialidade> especialidadesIterable = especialidadeRepository.findAll();
+        return StreamSupport.stream(especialidadesIterable.spliterator(), false)
+                .map(e -> {
+                    EspecialidadeDTO dto = new EspecialidadeDTO();
+                    dto.setIdEspecialidade(e.getIdEspecialidade());
+                    dto.setDescricao(e.getDescricao());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @PostMapping
-    public Especialidade criar(@RequestBody Especialidade especialidade) {
-        return especialidadeService.salvar(especialidade);
+    public EspecialidadeDTO createEspecialidade(@RequestBody EspecialidadeDTO dto) {
+        Especialidade especialidade = new Especialidade();
+        especialidade.setDescricao(dto.getDescricao());
+        especialidade.setNivel(dto.getNivel());
+        especialidade.setTotalRequisitos(dto.getTotalRequisitos());
+        // Handle AreaConhecimento if needed
+        Especialidade saved = especialidadeRepository.save(especialidade);
+        EspecialidadeDTO responseDto = new EspecialidadeDTO();
+        responseDto.setIdEspecialidade(saved.getIdEspecialidade());
+        responseDto.setDescricao(saved.getDescricao());
+        responseDto.setNivel(saved.getNivel());
+        responseDto.setTotalRequisitos(saved.getTotalRequisitos());
+        return responseDto;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Especialidade> atualizar(@PathVariable Integer id, @RequestBody Especialidade especialidade) {
-        if (!especialidadeService.buscarPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        especialidade.setIdEspecialidade(id);
-        return ResponseEntity.ok(especialidadeService.salvar(especialidade));
+    public ResponseEntity<EspecialidadeDTO> updateEspecialidade(@PathVariable Integer id, @RequestBody EspecialidadeDTO dto) {
+        return especialidadeRepository.findById(id)
+                .map(existing -> {
+                    existing.setDescricao(dto.getDescricao());
+                    existing.setNivel(dto.getNivel());
+                    existing.setTotalRequisitos(dto.getTotalRequisitos());
+                    // Handle AreaConhecimento if needed
+                    Especialidade updated = especialidadeRepository.save(existing);
+                    EspecialidadeDTO responseDto = new EspecialidadeDTO();
+                    responseDto.setIdEspecialidade(updated.getIdEspecialidade());
+                    responseDto.setDescricao(updated.getDescricao());
+                    responseDto.setNivel(updated.getNivel());
+                    responseDto.setTotalRequisitos(updated.getTotalRequisitos());
+                    return ResponseEntity.ok(responseDto);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-        if (!especialidadeService.buscarPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteEspecialidade(@PathVariable Integer id) {
+        if (especialidadeRepository.existsById(id)) {
+            especialidadeRepository.deleteById(id);
+            return ResponseEntity.ok().build();
         }
-        especialidadeService.deletar(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/nivel/{nivel}")
-    public List<EspecialidadeDTO> buscarPorNivel(@PathVariable Integer nivel) {
-        return especialidadeService.buscarPorNivel(nivel).stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-
-
-    private EspecialidadeDTO convertToDTO(Especialidade especialidade) {
-        EspecialidadeDTO dto = new EspecialidadeDTO();
-        dto.setIdEspecialidade(especialidade.getIdEspecialidade());
-        dto.setDescricao(especialidade.getDescricao());
-        dto.setNivel(especialidade.getNivel());
-        dto.setTotalRequisitos(especialidade.getTotalRequisitos());
-
-        if (especialidade.getAreaConhecimento() != null) {
-            dto.setAreaConhecimento(convertToDTO(especialidade.getAreaConhecimento()));
-        }
-
-        return dto;
-    }
-
-    private AreaConhecimentoDTO convertToDTO(ads.bcd.model.AreaConhecimento areaConhecimento) {
-        AreaConhecimentoDTO dto = new AreaConhecimentoDTO();
-        dto.setIdAreaConhecimento(areaConhecimento.getIdAreaConhecimento());
-        dto.setNome(areaConhecimento.getNome());
-        return dto;
+        return ResponseEntity.notFound().build();
     }
 }

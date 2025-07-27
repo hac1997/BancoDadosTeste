@@ -1,15 +1,10 @@
 package ads.bcd.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -33,8 +28,15 @@ public class Especialidade {
     @JoinColumn(name = "id_area_conhecimento")
     private AreaConhecimento areaConhecimento;
 
-    protected Especialidade() {
-    }
+    @ManyToMany
+    @JoinTable(
+        name = "e_requisito_especialidade",
+        joinColumns = @JoinColumn(name = "id_especialidade"),
+        inverseJoinColumns = @JoinColumn(name = "id_requisito")
+    )
+    private List<RequisitoEspecialidade> requisitos = new ArrayList<>();
+
+    public Especialidade() {}
 
     public Especialidade(String descricao, Integer nivel, Integer totalRequisitos, AreaConhecimento areaConhecimento) {
         this.descricao = descricao;

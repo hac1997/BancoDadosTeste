@@ -468,3 +468,36 @@ INSERT INTO jovem_requisito_especialidade (id_jovem, id_requisito, data_cumprime
 (9, 21, '2025-01-10'),
 (9, 22, '2025-01-20'),
 (9, 23, '2025-01-28');
+
+
+-- Associação entre especialidades e seus requisitos
+INSERT INTO e_requisito_especialidade (id_especialidade, id_requisito) VALUES
+(1, 1),
+(1, 2),
+(2, 3),
+(2, 4),
+(3, 1),
+(3, 5),
+(4, 2),
+(4, 6);
+
+-- Conquistas de especialidades por jovens
+INSERT INTO jovem_especialidade (id_jovem, id_especialidade, data_conquista) VALUES
+(1, 1, '2024-09-15'),
+(1, 2, '2024-10-15'),
+(2, 1, '2024-07-20'),
+(2, 3, '2024-08-30'),
+(3, 2, '2024-09-10'),
+(3, 4, '2024-11-01');
+
+-- Cumprimento de requisitos por jovens
+INSERT INTO jovem_requisito_especialidade (id_jovem, id_requisito, data_cumprimento) VALUES
+(1, 1, '2024-08-01'),
+(1, 2, '2024-08-10'),
+(1, 3, '2024-09-05'),
+(2, 1, '2024-07-01'),
+(2, 2, '2024-07-10'),
+(2, 5, '2024-08-15'),
+(3, 3, '2024-09-01'),
+(3, 4, '2024-09-05'),
+(3, 6, '2024-10-20');

@@ -1,9 +1,12 @@
 package ads.bcd.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RequisitoEspecialidadeDTO {
-    private Integer idRequisito; // Nome do campo corresponde ao modelo
-    private String requisito;    // Nome do campo corresponde ao modelo (era 'descricao' antes)
-    private EspecialidadeDTO especialidade; // Incluir o DTO da especialidade se relevante
+    private Integer idRequisito;
+    private String requisito;
+    private List<EspecialidadeDTO> especialidades = new ArrayList<>();
 
     public RequisitoEspecialidadeDTO() {}
 
@@ -15,19 +18,19 @@ public class RequisitoEspecialidadeDTO {
         this.idRequisito = idRequisito;
     }
 
-    public String getRequisito() { // Getter para o campo 'requisito'
+    public String getRequisito() {
         return requisito;
     }
 
-    public void setRequisito(String requisito) { // Setter para o campo 'requisito'
+    public void setRequisito(String requisito) {
         this.requisito = requisito;
     }
 
-    public EspecialidadeDTO getEspecialidade() {
-        return especialidade;
+    public List<EspecialidadeDTO> getEspecialidades() {
+        return especialidades;
     }
 
-    public void setEspecialidade(EspecialidadeDTO especialidade) {
-        this.especialidade = especialidade;
+    public void setEspecialidades(List<EspecialidadeDTO> especialidades) {
+        this.especialidades = especialidades;
     }
 }
