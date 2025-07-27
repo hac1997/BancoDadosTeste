@@ -12,6 +12,8 @@ public class ProgressaoJovemDTO {
     private Integer totalRequisitosCumpridos;
     private String nivelAtual;
     private String dataNasc;
+    private Map<String, Object> jovem; // Dados completos do jovem
+    private List<Map<String, Object>> especialidades; // Especialidades com progresso
 
     // Constructor, if needed
     public ProgressaoJovemDTO(Integer idJovem, String nomeJovem, List<Map<String, Object>> progressaoEspecialidades,

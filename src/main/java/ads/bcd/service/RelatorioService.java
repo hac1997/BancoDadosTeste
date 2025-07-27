@@ -29,15 +29,18 @@ public class RelatorioService {
     private final EspecialidadeRepository especialidadeRepository;
     private final AreaConhecimentoRepository areaConhecimentoRepository;
     private final JovemRequisitoEspecialidadeRepository jovemRequisitoEspecialidadeRepository;
+    private final InsigniaRepository insigniaRepository;
 
     public RelatorioService(JovemRepository jovemRepository,
             EspecialidadeRepository especialidadeRepository,
             AreaConhecimentoRepository areaConhecimentoRepository,
-            JovemRequisitoEspecialidadeRepository jovemRequisitoEspecialidadeRepository) {
+            JovemRequisitoEspecialidadeRepository jovemRequisitoEspecialidadeRepository,
+            InsigniaRepository insigniaRepository) {
         this.jovemRepository = jovemRepository;
         this.especialidadeRepository = especialidadeRepository;
         this.areaConhecimentoRepository = areaConhecimentoRepository;
         this.jovemRequisitoEspecialidadeRepository = jovemRequisitoEspecialidadeRepository;
+        this.insigniaRepository = insigniaRepository;
     }
 
     public Map<String, Object> obterEstatisticasGerais() {
@@ -50,9 +53,13 @@ public class RelatorioService {
         List<JovemRequisitoEspecialidade> todosRequisitos = StreamSupport
                 .stream(jovemRequisitoEspecialidadeRepository.findAll().spliterator(), false)
                 .toList();
+        List<Insignia> todasInsignias = StreamSupport
+                .stream(insigniaRepository.findAll().spliterator(), false)
+                .toList();
 
         estatisticas.put("totalJovens", todosJovens.size());
         estatisticas.put("totalEspecialidades", todasEspecialidades.size());
+        estatisticas.put("totalInsignias", todasInsignias.size());
         estatisticas.put("totalRequisitosCompletos", todosRequisitos.size());
 
         // Jovens aptos ao Cruzeiro do Sul (15+ requisitos)
@@ -77,6 +84,21 @@ public class RelatorioService {
         // Média de requisitos por jovem
         double mediaRequisitos = todosJovens.isEmpty() ? 0.0 : (double) todosRequisitos.size() / todosJovens.size();
         estatisticas.put("mediaRequisitosPorJovem", Math.round(mediaRequisitos * 10.0) / 10.0);
+
+        // Distintivos conquistados (estimativa baseada em requisitos)
+        long totalDistintivos = todosJovens.stream()
+                .mapToLong(jovem -> {
+                    long reqs = jovemRequisitoEspecialidadeRepository.findByJovemIdJovem(jovem.getIdJovem()).size();
+                    long distintivos = 0;
+                    if (reqs >= 4) distintivos++;
+                    if (reqs >= 6) distintivos++;
+                    if (reqs >= 8) distintivos++;
+                    if (reqs >= 10) distintivos++;
+                    if (reqs >= 15) distintivos++;
+                    return distintivos;
+                })
+                .sum();
+        estatisticas.put("totalDistintivos", totalDistintivos);
 
         return estatisticas;
     }
@@ -279,5 +301,45 @@ public class RelatorioService {
         }
 
         return ranking;
+    }
+
+    public Map<String, Object> obterDadosJovem(Integer jovemId) {
+        Optional<Jovem> jovemOpt = jovemRepository.findById(jovemId);
+        if (!jovemOpt.isPresent()) {
+            return Map.of("erro", "Jovem não encontrado");
+        }
+        
+        Jovem jovem = jovemOpt.get();
+        List<JovemRequisitoEspecialidade> requisitos = jovemRequisitoEspecialidadeRepository.findByJovemIdJovem(jovemId);
+        
+        Map<String, Object> dados = new HashMap<>();
+        dados.put("id", jovem.getIdJovem());
+        dados.put("nome", jovem.getNome());
+        dados.put("dataNascimento", jovem.getDataNasc().toString());
+        dados.put("dataEntrada", jovem.getDataEntrada().toString());
+        dados.put("tipoSanguineo", jovem.getTipoSanguineo());
+        dados.put("alergias", jovem.getAlergias());
+        
+        if (jovem.getContato() != null) {
+            dados.put("contato", Map.of(
+                "telefone", jovem.getContato().getTelefone(),
+                "email", jovem.getContato().getEmail(),
+                "endereco", jovem.getContato().getEndereco()
+            ));
+        }
+        
+        dados.put("totalRequisitos", requisitos.size());
+        dados.put("nivelAtual", determinarNivel(requisitos.size()));
+        
+        return dados;
+    }
+    
+    private String determinarNivel(int totalRequisitos) {
+        if (totalRequisitos >= 15) return "Cruzeiro do Sul";
+        if (totalRequisitos >= 10) return "Lobo Caçador";
+        if (totalRequisitos >= 8) return "Lobo Rastreador";
+        if (totalRequisitos >= 6) return "Lobo Saltador";
+        if (totalRequisitos >= 4) return "Lobo Pata Tenra";
+        return "Iniciante";
     }
 }
