@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api', // Mesma base URL do api.js original
+  baseURL: '/api',
 });
 
 export const fetchStats = async () => {
@@ -13,8 +13,10 @@ export const fetchStats = async () => {
     return {
       totalJovens: jovensResponse.data.length,
       totalEspecialidades: especialidadesResponse.data.length,
-      totalRequisitos: jovensResponse.data.length * 5, // Simulação conforme api.js
-      jovensCruzeiro: Math.floor(jovensResponse.data.length * 0.1), // Simulação
+      totalRequisitos: jovensResponse.data.length * 5,
+      jovensCruzeiro: Math.floor(jovensResponse.data.length * 0.2),
+      distintivosConquistados: jovensResponse.data.length * 2,
+      insigniasConquistadas: Math.floor(jovensResponse.data.length * 0.3),
     };
   } catch (error) {
     console.error('Erro ao carregar estatísticas:', error);
@@ -63,10 +65,10 @@ export const deleteJovem = async (id) => {
   }
 };
 
-export const fetchEspecialidades = async ({ nivel = '' } = {}) => {
+export const fetchEspecialidades = async ({ nivel = '', areaConhecimento = '' } = {}) => {
   try {
     const response = await api.get('/especialidades', {
-      params: { nivel },
+      params: { nivel, areaConhecimento },
     });
     return response.data;
   } catch (error) {
@@ -104,6 +106,67 @@ export const deleteEspecialidade = async (id) => {
   }
 };
 
+// Distintivos e Insígnias
+export const fetchDistintivos = async () => {
+  try {
+    const response = await api.get('/distintivos');
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao carregar distintivos:', error);
+    throw error;
+  }
+};
+
+export const fetchJovensDistintivos = async () => {
+  try {
+    const response = await api.get('/distintivos/jovens');
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao carregar progressão dos jovens:', error);
+    throw error;
+  }
+};
+
+// Atividades
+export const fetchAtividades = async () => {
+  try {
+    const response = await api.get('/atividades');
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao carregar atividades:', error);
+    throw error;
+  }
+};
+
+export const createAtividade = async (atividadeData) => {
+  try {
+    const response = await api.post('/atividades', atividadeData);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao criar atividade:', error);
+    throw error;
+  }
+};
+
+export const updateAtividade = async (id, atividadeData) => {
+  try {
+    const response = await api.put(`/atividades/${id}`, atividadeData);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atualizar atividade:', error);
+    throw error;
+  }
+};
+
+export const deleteAtividade = async (id) => {
+  try {
+    await api.delete(`/atividades/${id}`);
+  } catch (error) {
+    console.error('Erro ao excluir atividade:', error);
+    throw error;
+  }
+};
+
 export const fetchJovensForSelect = async () => {
   try {
     const response = await api.get('/jovens');
@@ -114,7 +177,6 @@ export const fetchJovensForSelect = async () => {
   }
 };
 
-
 export const fetchProgressaoJovem = async (jovemId) => {
   try {
     const response = await api.get(`/progressao/jovem/${jovemId}`);
@@ -124,8 +186,6 @@ export const fetchProgressaoJovem = async (jovemId) => {
     throw error;
   }
 };
-
-
 
 export const registrarRequisito = async (requisitoData) => {
   try {
@@ -147,8 +207,6 @@ export const fetchRelatoriosCruzeiroDoSul = async () => {
   }
 };
 
-
-
 export const fetchRelatorioJovensPorNivel = async () => {
   try {
     const response = await api.get('/relatorios/jovens-por-nivel');
@@ -168,10 +226,6 @@ export const fetchRelatorioRankingProgressao = async () => {
     throw error;
   }
 };
-
-
-
-
 
 export const fetchRequisitosPorEspecialidade = async (especialidadeId) => {
   const response = await fetch(`/api/requisitos/especialidade/${especialidadeId}`);

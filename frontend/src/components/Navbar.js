@@ -8,8 +8,8 @@ function CustomNavbar() {
     <Navbar expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand as={Link} to="/">
-          <i className="fas fa-campground me-2"></i>
-          Sistema Escoteiro - Lobinhos
+          <i className="fas fa-paw me-2"></i>
+          Sistema Escoteiro - Ramo Lobinho
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarNav" />
         <Navbar.Collapse id="navbarNav">
@@ -18,10 +18,16 @@ function CustomNavbar() {
               <i className="fas fa-home me-1"></i> Início
             </Nav.Link>
             <Nav.Link as={Link} to="/jovens" active={location.pathname === '/jovens'}>
-              <i className="fas fa-users me-1"></i> Jovens
+              <i className="fas fa-paw me-1"></i> Jovens Lobinhos
             </Nav.Link>
             <Nav.Link as={Link} to="/especialidades" active={location.pathname === '/especialidades'}>
               <i className="fas fa-medal me-1"></i> Especialidades
+            </Nav.Link>
+            <Nav.Link as={Link} to="/distintivos" active={location.pathname === '/distintivos'}>
+              <i className="fas fa-award me-1"></i> Distintivos
+            </Nav.Link>
+            <Nav.Link as={Link} to="/atividades" active={location.pathname === '/atividades'}>
+              <i className="fas fa-calendar-alt me-1"></i> Atividades
             </Nav.Link>
             <Nav.Link as={Link} to="/progressao" active={location.pathname === '/progressao'}>
               <i className="fas fa-chart-line me-1"></i> Progressão

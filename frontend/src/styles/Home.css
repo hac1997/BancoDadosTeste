@@ -3,56 +3,116 @@
   color: white;
   padding: 3rem 2rem;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="paw" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23paw)"/></svg>');
+  opacity: 0.3;
+}
+
+.hero-section > * {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-section h1 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   font-weight: 300;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-.hero-section p {
-  font-size: 1.2rem;
-  opacity: 0.9;
+.hero-section .lead {
+  font-size: 1.3rem;
+  opacity: 0.95;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
 .feature-card {
   background: white;
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 2rem;
   margin: 1rem 0;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-left: 4px solid var(--accent-color);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 5px solid var(--accent-color);
+  height: 100%;
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
 .feature-icon {
-  font-size: 3rem;
+  font-size: 3.5rem;
   color: var(--secondary-color);
+  margin-bottom: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  color: var(--accent-color);
+}
+
+.feature-card .card-title {
+  color: var(--primary-color);
+  font-weight: 600;
   margin-bottom: 1rem;
 }
 
+.feature-card .btn {
+  border-radius: 25px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.feature-card .btn:hover {
+  transform: scale(1.05);
+}
+
 .stats-section {
-  background: #f8f9fa;
-  padding: 2rem;
-  margin: 2rem 0;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+  padding: 3rem 2rem;
+  margin: 3rem 0;
+  border-radius: 20px;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.stats-section h3 {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 2rem;
 }
 
 .stat-item {
   text-align: center;
-  padding: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.stat-item:hover {
+  transform: translateY(-3px);
 }
 
 .stat-number {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: bold;
   color: var(--secondary-color);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 .stat-label {
@@ -60,4 +120,59 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.knowledge-area {
+  padding: 1rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.knowledge-area:hover {
+  background-color: rgba(255,255,255,0.8);
+  transform: scale(1.05);
+}
+
+.knowledge-area i {
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.knowledge-area:hover i {
+  transform: scale(1.2);
+}
+
+.knowledge-area .small {
+  font-weight: 500;
+  color: #495057;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-section .lead {
+    font-size: 1.1rem;
+  }
+  
+  .feature-card {
+    padding: 1.5rem;
+    margin: 0.5rem 0;
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+  }
+  
+  .stats-section {
+    padding: 2rem 1rem;
+  }
 }
