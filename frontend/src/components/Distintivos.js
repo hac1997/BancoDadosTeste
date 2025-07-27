@@ -170,15 +170,7 @@ function Distintivos() {
                         <Badge bg="primary">{distintivo.requisitos} requisitos</Badge>
                         <Badge bg="secondary" className="ms-1">Ordem: {distintivo.ordem}</Badge>
                       </div>
-                      {distintivo.id === 5 && (
-                        <div className="alert alert-info small">
-                          <strong>Requisitos especiais:</strong><br/>
-                          • Lobo Caçador conquistado<br/>
-                          • Mínimo 1 insígnia especial<br/>
-                          • 5 especialidades em 3 áreas<br/>
-                          • Recomendação de Velho Lobo
-                        </div>
-                      )}
+
                     </Card.Body>
                   </Card>
                 </Col>
@@ -285,25 +277,7 @@ function Distintivos() {
             </Card>
           </div>
 
-          <div className="alert alert-info">
-            <h6><i className="fas fa-info-circle me-2"></i>Informações sobre o Sistema de Progressão</h6>
-            <Row>
-              <Col md={6}>
-                <ul className="mb-0">
-                  <li><strong>Lobo Pata Tenra:</strong> Primeiro passo no escotismo</li>
-                  <li><strong>Lobo Saltador:</strong> Desenvolvimento de habilidades básicas</li>
-                  <li><strong>Lobo Rastreador:</strong> Aprofundamento em técnicas escoteiras</li>
-                </ul>
-              </Col>
-              <Col md={6}>
-                <ul className="mb-0">
-                  <li><strong>Lobo Caçador:</strong> Preparação para liderança</li>
-                  <li><strong>Cruzeiro do Sul:</strong> Máxima conquista do ramo lobinho</li>
-                  <li><strong>Insígnias:</strong> Reconhecimento de interesses especiais</li>
-                </ul>
-              </Col>
-            </Row>
-          </div>
+          
         </div>
       </Container>
     </div>

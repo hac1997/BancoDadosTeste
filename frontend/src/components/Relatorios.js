@@ -412,15 +412,7 @@ function Relatorios() {
               <h5><i className="fas fa-star me-2"></i>4. Jovens Aptos ao Cruzeiro do Sul</h5>
             </Card.Header>
             <Card.Body>
-              <div className="alert alert-info">
-                <strong>Critérios para o Cruzeiro do Sul:</strong>
-                <ul className="mb-0">
-                  <li>Possuir o distintivo Lobo Caçador</li>
-                  <li>Ter obtido no mínimo 1 insígnia de interesse especial</li>
-                  <li>Ter 5 especialidades em pelo menos 3 áreas de conhecimento diferentes</li>
-                  <li>Ser recomendado por um Velho Lobo</li>
-                </ul>
-              </div>
+
               
               <Table striped bordered hover>
                 <thead>

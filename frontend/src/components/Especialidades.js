@@ -106,21 +106,7 @@ function Especialidades() {
             </Button>
           </div>
 
-          {/* Informações sobre especialidades */}
-          <div className="alert alert-info mb-4">
-            <h6><i className="fas fa-info-circle me-2"></i>Sistema de Especialidades</h6>
-            <Row>
-              <Col md={4}>
-                <strong>Nível 1:</strong> Cumprimento de 1/3 dos requisitos
-              </Col>
-              <Col md={4}>
-                <strong>Nível 2:</strong> Cumprimento de 2/3 dos requisitos
-              </Col>
-              <Col md={4}>
-                <strong>Nível 3:</strong> Cumprimento de todos os requisitos
-              </Col>
-            </Row>
-          </div>
+
 
           {/* Filtros */}
           <Row className="mb-4">
